@@ -64,6 +64,7 @@ class _NewsHomePageState extends State<NewsHomePage> {
   List articles = [];
   bool isLoading = true;
   String apiKey = '2850d9ce399dcf8f01d940abb2ef0ad3'; // Buraya kendi GNews API anahtarınızı ekleyin.
+  String category = 'general'; // Varsayılan kategori
 
   @override
   void initState() {
@@ -74,7 +75,7 @@ class _NewsHomePageState extends State<NewsHomePage> {
   Future<void> fetchNews() async {
     try {
       final response = await http.get(Uri.parse(
-          'https://gnews.io/api/v4/top-headlines?token=$apiKey&lang=en'));
+          'https://gnews.io/api/v4/top-headlines?token=$apiKey&lang=en&country=tr&topic=$category'));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
@@ -100,6 +101,14 @@ class _NewsHomePageState extends State<NewsHomePage> {
     fetchNews();
   }
 
+  void changeCategory(String newCategory) {
+    setState(() {
+      category = newCategory;
+      isLoading = true;
+    });
+    fetchNews();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -114,6 +123,68 @@ class _NewsHomePageState extends State<NewsHomePage> {
           ),
           IconButton(icon: Icon(Icons.notifications), onPressed: () {}),
         ],
+      ),
+      drawer: Drawer(
+        child: ListView(
+          padding: EdgeInsets.zero,
+          children: <Widget>[
+            DrawerHeader(
+              child: Text('Kategoriler', style: TextStyle(color: Colors.white, fontSize: 24)),
+              decoration: BoxDecoration(
+                color: Colors.blue,
+              ),
+            ),
+            ListTile(
+              title: Text('Genel'),
+              onTap: () {
+                changeCategory('general');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('İş'),
+              onTap: () {
+                changeCategory('business');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Teknoloji'),
+              onTap: () {
+                changeCategory('technology');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Eğlence'),
+              onTap: () {
+                changeCategory('entertainment');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Spor'),
+              onTap: () {
+                changeCategory('sports');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Bilim'),
+              onTap: () {
+                changeCategory('science');
+                Navigator.pop(context);
+              },
+            ),
+            ListTile(
+              title: Text('Sağlık'),
+              onTap: () {
+                changeCategory('health');
+                Navigator.pop(context);
+              },
+            ),
+          ],
+        ),
       ),
       body: isLoading
           ? Center(child: CircularProgressIndicator())
